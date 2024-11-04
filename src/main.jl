@@ -25,6 +25,7 @@ setjs3 = getSets(apikey,userhash,"",pageNumber=1,theme="seasonal",pageSize=500,o
 setjs = vcat(setjs1,setjs2,setjs3)
 dfsets = setsToDataFrame(setjs)
 CSV.write(raw"C:\temp\dfsets.csv",dfsets)
+CSV.write(raw"C:\Users\bernhard.koenig\OneDrive - K\Dateien\Lego\brickset\sets.csv",dfsets)
 #insert with phpmyadmin
 #or try MySQL.load(table, conn, table_name) 
 =#

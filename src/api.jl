@@ -7,7 +7,7 @@ function login(username, password,apikey)
     bdy = Dict{String,String}("password" => password, "username" => username, "apiKey" => apikey)
     hdr = Dict("Content-Type"=>"application/x-www-form-urlencoded")
 
-    res = HTTP.request("POST", url, headers=hdr, body=bdy)
+    res = HTTP.request("POST", url, headers=hdr, body=bdy, require_ssl_verification=false)
     js = JSON3.read(IOBuffer(res.body))
     @assert js["status"] == "success"
     return js["hash"]
@@ -20,7 +20,7 @@ function checkUserHash(userhash,apikey)
     hdr = Dict("Content-Type"=>"application/x-www-form-urlencoded")
 
     try 
-        res = HTTP.request("POST", url, headers=hdr, body=bdy)
+        res = HTTP.request("POST", url, headers=hdr, body=bdy ,require_ssl_verification=false)
         js = JSON3.read(IOBuffer(res.body))
         @assert js["status"] == "success"
         return true
@@ -47,7 +47,7 @@ function setCollection(apikey,userhash,setid::Int64,params="")
     hdr = Dict("Content-Type"=>"application/x-www-form-urlencoded")
 
     try
-        res = HTTP.request("POST", url, headers=hdr, body=bdy)
+        res = HTTP.request("POST", url, headers=hdr, body=bdy,require_ssl_verification=false)
         js = JSON3.read(IOBuffer(res.body))
         @assert js["status"] == "success"
     catch e
@@ -57,9 +57,6 @@ function setCollection(apikey,userhash,setid::Int64,params="")
 
     return nothing 
 end
-
-
-
 
 function getSets(apikey,userhash,setid,params="";pageNumber=1,theme="star wars",pageSize=500,orderBy="Number")
     #pageSize	Specify how many records to retrieve (default: 20, max: 500)
@@ -74,7 +71,7 @@ function getSets(apikey,userhash,setid,params="";pageNumber=1,theme="star wars",
     bdy = Dict("userHash" => userhash, "apiKey" => apikey,"params"=>params)
     hdr = Dict("Content-Type"=>"application/x-www-form-urlencoded")
     #query
-    res = HTTP.request("POST", url, headers=hdr, body=bdy)
+    res = HTTP.request("POST", url, headers=hdr, body=bdy,require_ssl_verification=false)
     js = JSON3.read(IOBuffer(res.body))
     sets0 = copy(js["sets"]) #copy is needed to make this mutable
     size(sets0)
@@ -85,7 +82,7 @@ function getSets(apikey,userhash,setid,params="";pageNumber=1,theme="star wars",
         pageNumber += 1
         params = "{'theme':'$theme','pageSize':$pageSize,'pageNumber':$pageNumber,'orderBy':'$orderBy'}"
         bdy = Dict("userHash" => userhash, "apiKey" => apikey,"params"=>params)
-        res = HTTP.request("POST", url, headers=hdr, body=bdy)
+        res = HTTP.request("POST", url, headers=hdr, body=bdy,require_ssl_verification=false)
         js = JSON3.read(IOBuffer(res.body))
         sets = copy(js["sets"])
         append!(sets0,sets)        
