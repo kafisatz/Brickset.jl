@@ -14,7 +14,7 @@ setjs2 = getSets(apikey,userhash,"",pageNumber=1,theme="BrickHeadz",pageSize=500
 setjs3 = getSets(apikey,userhash,"",pageNumber=1,theme="seasonal",pageSize=500,orderBy="Number");
 setjs = vcat(setjs1,setjs2,setjs3)
 dfsets = setsToDataFrame(setjs)
-CSV.write(raw"C:\Users\bernhard.koenig\OneDrive - K\Dateien\Lego\brickset\sets.csv",dfsets)
+CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","brickset","sets.csv"),dfsets)
 
 #=
 #insert with phpmyadmin
