@@ -9,11 +9,14 @@ userhash = login(username, password,apikey)
 
 #get set IDs from brickset
 
-setjs1 = getSets(apikey,userhash,"",pageNumber=1,theme="star wars",pageSize=500,orderBy="Number");
-setjs2 = getSets(apikey,userhash,"",pageNumber=1,theme="BrickHeadz",pageSize=500,orderBy="Number");
-setjs3 = getSets(apikey,userhash,"",pageNumber=1,theme="seasonal",pageSize=500,orderBy="Number");
+setjs1 = getSets(apikey,userhash,"",pageNumber=1,theme="Star Wars",pageSize=500,orderBy="Number"); size(setjs1)
+setjs2 = getSets(apikey,userhash,"",pageNumber=1,theme="BrickHeadz",pageSize=500,orderBy="Number"); size(setjs2)
+setjs3 = getSets(apikey,userhash,"",pageNumber=1,theme="seasonal",pageSize=500,orderBy="Number"); size(setjs3)
 setjs = vcat(setjs1,setjs2,setjs3)
-dfsets = setsToDataFrame(setjs)
+dfsets = setsToDataFrame(setjs); size(setjs)
+
+bringcolumnstotheleft!(dfsets,[:numberVariant,:released,:packagingType,:additionalImageCount,:year,:availability,:setID,:number])
+
 CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","brickset","sets.csv"),dfsets)
 
 #=
