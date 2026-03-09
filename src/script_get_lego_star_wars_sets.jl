@@ -25,3 +25,5 @@ bringcolumnstotheleft!(dfsets_brickset,[:numberVariant,:released,:packagingType,
 
 CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","brickset","sets.csv"),dfsets_brickset)
 
+#add this to bricklink set_list
+new_set = filter(x->x.year >= 2025,dfsets_brickset).number
