@@ -9,6 +9,8 @@ credentials = JSON3.read(json_text); apikey = credentials["apikey"]; username = 
 #login
 userhash = login(username, password,apikey)
 @assert checkUserHash(userhash,apikey)
+#request new API key (it is automatic, usually takes 1 minute)
+#https://brickset.com/tools/webservices/requestkey
 
 #get set IDs from brickset
 
