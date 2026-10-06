@@ -25,9 +25,13 @@ dfsets_brickset = setsToDataFrame(setjs); size(setjs)
 
 bringcolumnstotheleft!(dfsets_brickset,[:numberVariant,:released,:packagingType,:additionalImageCount,:year,:availability,:setID,:number])
 
-savedir1 = joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","brickset")
-if isdir(savedir1)
-    CSV.write(joinpath(savedir1,"sets.csv"),dfsets_brickset)
+try 
+    savedir1 = joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","brickset")
+    if isdir(savedir1)
+        CSV.write(joinpath(savedir1,"sets.csv"),dfsets_brickset)
+    end
+catch 
+    savedir1 = ""
 end
 
 pt0 = pkgdir(Brickset)
@@ -37,3 +41,31 @@ CSV.write(joinpath(savedir2,"sets.csv"),dfsets_brickset)
 
 #add this to bricklink set_list
 new_set = filter(x->x.year >= 2025,dfsets_brickset).number
+
+#set list  have in Bricklink.jl
+pt00 = pkgdir(Brickset)
+pt_bricklink = normpath(joinpath(pt00,".."),"BrickLink.jl")
+@assert isdir(pt_bricklink)
+fi = normpath(joinpath(pt_bricklink,"src","set_list.txt"))
+@assert isfile(fi)
+set_list_bricklink = CSV.read(fi, DataFrame, header=false)
+DataFrames.rename!(set_list_bricklink, Dict(1=>"set_no"))
+set_list_bricklink.set_no .= convert(Vector{String}, strip.(string.(set_list_bricklink.set_no)))
+unique!(set_list_bricklink)
+
+#add all set no that we have in dfsets_brickset.number
+hv = deepcopy(dfsets_brickset.number)
+#discard everything that is not numeric, e.g "LJXMAS02" should be disccarded
+hv = filter(x -> all(isdigit, x), hv)
+#discard everything with more than 5 characters 
+hv = filter(x -> length(x) <= 5, hv)
+
+#add the remaining set numbers to the bricklink set list
+append!(set_list_bricklink.set_no, hv)
+unique!(set_list_bricklink)
+@show length_before = length(set_list_bricklink.set_no)
+@show length_after = length(unique(set_list_bricklink.set_no))
+CSV.write(fi, set_list_bricklink)
+
+"75453" in set_list_bricklink.set_no
+"75458" in set_list_bricklink.set_no

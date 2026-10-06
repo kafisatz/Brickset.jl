@@ -1,7 +1,7 @@
 using Revise; using Brickset;import CSV; using DataFrames; using JSON3; using HTTP; using MySQL
 
 #credentials
-fldr = ENV["USERPROFILE"]
+fldr = homedir()
 fi = joinpath(fldr,"authbrickset.json")
 @assert isfile(fi)
 credentials = JSON3.read(fi);
