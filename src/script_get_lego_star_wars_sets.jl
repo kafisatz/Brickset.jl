@@ -3,7 +3,7 @@
 
 using Revise; using Brickset;import CSV; using DataFrames; using JSON3; using HTTP; using MySQL
 #credentials
-fldr = ENV["USERPROFILE"]; fi = joinpath(fldr,"authbrickset.json")
+fldr = homedir(); fi = joinpath(fldr,"authbrickset.json")
 @assert isfile(fi); json_text = read(fi, String)   # file is opened, read, and closed
 credentials = JSON3.read(json_text); apikey = credentials["apikey"]; username = credentials["username"]; password = credentials["password"];
 #login
@@ -25,7 +25,15 @@ dfsets_brickset = setsToDataFrame(setjs); size(setjs)
 
 bringcolumnstotheleft!(dfsets_brickset,[:numberVariant,:released,:packagingType,:additionalImageCount,:year,:availability,:setID,:number])
 
-CSV.write(joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","brickset","sets.csv"),dfsets_brickset)
+savedir1 = joinpath(ENV["USERPROFILE"],"OneDrive - K","Dateien","Lego","brickset")
+if isdir(savedir1)
+    CSV.write(joinpath(savedir1,"sets.csv"),dfsets_brickset)
+end
+
+pt0 = pkgdir(Brickset)
+savedir2 = joinpath(pt0,"data")
+@assert isdir(savedir2)
+CSV.write(joinpath(savedir2,"sets.csv"),dfsets_brickset)
 
 #add this to bricklink set_list
 new_set = filter(x->x.year >= 2025,dfsets_brickset).number
